@@ -1,5 +1,5 @@
 # AntCounter
-Python3, OpenCV3 port of https://sites.google.com/site/antcounter/
+Python 3.5, OpenCV 3.0 port of https://sites.google.com/site/antcounter/
 
 Changes besides releated to Python and OpenCV:
 
