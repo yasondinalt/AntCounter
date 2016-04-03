@@ -1,3 +1,12 @@
+#!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+
+
 __author__ = 'Santiago'
 
 import cv2.cv as cv, math
@@ -5,6 +14,29 @@ import numpy as np
 import pylab
 from tkFileDialog   import askopenfilename
 import tkMessageBox
+
+def showImage(window_name, image):
+        """
+        For debug purpose. Using matplot, because my cv.imshow() is broken now.
+        """
+        # test first pixel, if image gray convert to BGR (openCV color order)
+        if  isinstance(image[0][0], np.uint8) or \
+                isinstance(image[0][0], np.ndarray) and len(image[0][0]) == 1:
+            image = cv.cvtColor(image, cv.COLOR_GRAY2BGR)
+        
+        # now convert to RGB, suitable for matplotlib
+        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        
+        # hide axis
+        ax = pylab.gca()
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+
+        pylab.title(window_name)
+        pylab.imshow(image)
+        pylab.show()
+        cv.waitKey(7)
+        sys.exit(0)
 
 class AntCounter:
 
@@ -140,7 +172,21 @@ class AntCounter:
             frame = cv.QueryFrame(self.capture)
             size = cv.GetSize(frame)
             grey_image = cv.CreateImage(size, cv.IPL_DEPTH_8U, 1)
+            
+            #show_image(grey_image)
+            #sys.exit(0)
+            
+            #cv.ShowImage("bloor", grey_image)
+            #cv.WaitKey(7) % 0x100
+            
+            #print grey_image
+            #print np.asarray(grey_image[:,:])
+            #sys.exit(0)
+            
             moving_average = cv.CreateImage(size, cv.IPL_DEPTH_32F, 3)
+            #print moving_average
+            #print np.asarray(moving_average[:,:])
+            #sys.exit(0)
             difference = None
 
             #        number of frames of the video
@@ -191,6 +237,8 @@ class AntCounter:
                     cv.AbsDiff(color_image, temp, difference)
                     #                cv.ShowImage("difference", difference)
                     # Convert the image to grayscale.
+                    #print(difference)
+                    #print(grey_image)
                     cv.CvtColor(difference, grey_image, cv.CV_RGB2GRAY)
                     # Convert the image to black and white.
                     cv.Threshold(grey_image, grey_image, 70, 255, cv.CV_THRESH_BINARY)
